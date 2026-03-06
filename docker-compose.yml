@@ -45,6 +45,7 @@ services:
 
   nginx:
     image: nginx:latest
+    restart: on-failure
     environment:
       PORT_HTTP_NGINX: ${PORT_HTTP_NGINX}
       PORT_HTTPS_NGINX: ${PORT_HTTPS_NGINX}
@@ -52,13 +53,14 @@ services:
       - "${PORT_HTTP_NGINX}:${PORT_HTTP_NGINX}"
       - "${PORT_HTTPS_NGINX}:${PORT_HTTPS_NGINX}"
     depends_on:
-      - certbot
+      - links_s3_app
     volumes:
       - ./nginx:/etc/nginx
       - ./certs:/etc/letsencrypt
 
   certbot:
     image: certbot/certbot:latest
+    restart: unless-stopped
     container_name: certbot
     build:
       context: ./certbot
@@ -68,6 +70,8 @@ services:
         EMAIL: ${EMAIL}
     entrypoint: /bin/sh
     command: -c "while true; do certbot renew --nginx; sleep 12h; done"
+    depends_on:
+      - nginx
     volumes:
       - ./certs:/etc/letsencrypt
       - ./nginx/conf.d:/etc/nginx/conf.d
