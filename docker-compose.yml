@@ -57,6 +57,7 @@ services:
       - "${PORT_HTTP_NGINX}:${PORT_HTTP_NGINX}"
       - "${PORT_HTTPS_NGINX}:${PORT_HTTPS_NGINX}"
     depends_on:
+      - certbot
       - links_s3_app
     networks:
       - links_s3
@@ -76,8 +77,6 @@ services:
         EMAIL: ${EMAIL}
     entrypoint: /bin/sh
     command: -c "while true; do certbot renew --nginx; sleep 12h; done"
-    depends_on:
-      - nginx
     networks:
       - links_s3
     volumes:
