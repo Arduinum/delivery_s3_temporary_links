@@ -45,22 +45,36 @@ services:
 
   nginx:
     image: nginx:latest
+    environment:
+      PORT_HTTP_NGINX: ${PORT_HTTP_NGINX}
+      PORT_HTTPS_NGINX: ${PORT_HTTPS_NGINX}
+    ports:
+      - "${PORT_HTTP_NGINX}:${PORT_HTTP_NGINX}"
+      - "${PORT_HTTPS_NGINX}:${PORT_HTTPS_NGINX}"
+    depends_on:
+      - certbot
     volumes:
       - ./nginx:/etc/nginx
       - ./certs:/etc/letsencrypt
-    ports:
-      - "${PORT_http_NGINX}:${PORT_http_NGINX}"
-      - "${PORT_https_NGINX}:${PORT_https_NGINX}"
-    depends_on:
-      - certbot
 
   certbot:
     image: certbot/certbot:latest
     container_name: certbot
+    environment:
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL}
+    command: [
+      "--nginx",
+      "-d",
+      "$DOMAIN",
+      "--email",
+      "$EMAIL",
+      "--agree-tos",
+      "--no-eff-email"
+    ]
     volumes:
       - ./certs:/etc/letsencrypt
       - ./nginx/conf.d:/etc/nginx/conf.d
-    entrypoint: ""
 
 volumes:
   redis_data:
