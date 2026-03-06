@@ -1,10 +1,9 @@
-from typing import Any
-
 from pydantic_settings import BaseSettings, SettingsConfigDict, YamlConfigSettingsSource
 from pydantic import HttpUrl, SecretStr, field_validator, Field
 from pathlib import Path
 
 from delivery_s3_temporary_links.core.paths import get_file_path
+from delivery_s3_temporary_links.schemas.config_schema import User, Bucket
 
 
 class ModelConfig(BaseSettings):
@@ -18,26 +17,39 @@ class ModelConfig(BaseSettings):
 
 
 class Config(BaseSettings):
-    """Модель конфига yaml"""
+    """Модель конфига"""
 
-    buckets: dict[str, Any]
+    users: list[User]
+    buckets: list[Bucket]
 
     model_config = SettingsConfigDict(
-        yaml_file=get_file_path(file_name='config.yml'),
-        yaml_file_encoding='utf-8',
         extra='ignore'
     )
 
     @classmethod
     def settings_customise_sources(
-        cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
     ):
         return (
             init_settings,
-            YamlConfigSettingsSource(settings_cls),
+            YamlConfigSettingsSource(
+                settings_cls,
+                yaml_file=get_file_path('users.yml'),
+                yaml_file_encoding='utf-8',
+            ),
+            YamlConfigSettingsSource(
+                settings_cls,
+                yaml_file=get_file_path('buckets.yml'),
+                yaml_file_encoding='utf-8',
+            ),
             env_settings,
             dotenv_settings,
-            file_secret_settings
+            file_secret_settings,
         )
 
 
@@ -67,6 +79,7 @@ class SettingsApp(ModelConfig):
     port_app: int
     interface: str
     workers: int
+    secret: SecretStr
 
     @property
     def ip(self) -> str:
@@ -84,6 +97,7 @@ class SettingsRedis(ModelConfig):
     prefix: str
     redis_user: str
     redis_passwd: SecretStr
+    token_ttl_seconds: int
 
     @property
     def url_redis(self) -> str:

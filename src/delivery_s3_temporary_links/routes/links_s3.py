@@ -5,6 +5,7 @@ from delivery_s3_temporary_links.core.settings import settings
 from delivery_s3_temporary_links.core.settings import config
 from delivery_s3_temporary_links.auth.redis_bearer import require_redis_token
 from delivery_s3_temporary_links.dependency.errors import handle_exceptions_s3
+from delivery_s3_temporary_links.utils.utils import is_status_folder
 
 
 file_s3_router = APIRouter(prefix='/files_s3', tags=['Files_S3'])
@@ -15,9 +16,7 @@ file_s3_router = APIRouter(prefix='/files_s3', tags=['Files_S3'])
 async def get_file_secret_link(bucket_name: str, folder: str, name: str):
     """Ручка для получения ссылки на секретный файл"""
 
-    allowed_folders = config.buckets.get(bucket_name, {}).get('folder', {})
-
-    if isinstance(allowed_folders, dict) and allowed_folders.get(folder, {}).get('status', '') == 'private':
+    if is_status_folder(buckets=config.buckets, bucket_name=bucket_name, folder=folder, status='private'):
         data_link = get_temporary_link(
             bucket_name=bucket_name,
             key=f'{folder}/{name}',
@@ -37,9 +36,7 @@ async def get_file_secret_link(bucket_name: str, folder: str, name: str):
 async def get_file_public_link(bucket_name: str, folder: str, name: str):
     """Ручка для получения ссылки на публичный файл"""
 
-    allowed_folders = config.buckets.get(bucket_name, {}).get('folder', {})
-
-    if isinstance(allowed_folders, dict) and allowed_folders.get(folder, {}).get('status', '') == 'public':
+    if is_status_folder(buckets=config.buckets, bucket_name=bucket_name, folder=folder, status='public'):
         data_link = get_temporary_link(
             bucket_name=bucket_name,
             key=f'{folder}/{name}',

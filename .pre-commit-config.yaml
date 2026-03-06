@@ -30,3 +30,5 @@ repos:
           - granian
           - boto3
           - redis
+          - pyjwt
+          - passlib

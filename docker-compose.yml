@@ -54,13 +54,13 @@ services:
     depends_on:
       - certbot
 
-    certbot:
-      image: certbot/certbot:latest
-      container_name: certbot
-      volumes:
-        - ./certs:/etc/letsencrypt
-        - ./nginx/conf.d:/etc/nginx/conf.d
-      entrypoint: ""
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    entrypoint: ""
 
 volumes:
   redis_data:

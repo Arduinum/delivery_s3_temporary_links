@@ -1,0 +1,14 @@
+buckets:
+  - name: bucketname1
+    folders:
+      - name: foldername1
+        status: private
+      - name: foldername2
+        status: public
+
+  - name: bucketname2
+    folders:
+      - name: foldername1
+        status: private
+      - name: foldername2
+        status: public

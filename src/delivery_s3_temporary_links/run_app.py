@@ -6,7 +6,7 @@ from delivery_s3_temporary_links.core.settings import settings
 def run() -> None:
     """Функция для запуска приложения"""
 
-    target = 'delivery_s3_temporary_links.run_app:app'
+    target = 'delivery_s3_temporary_links.main:app'
 
     Granian(
         target=target,
