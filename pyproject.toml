@@ -8,11 +8,14 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "bcrypt>=5.0.0",
     "boto3>=1.42.45",
     "fastapi>=0.128.7",
     "granian>=2.7.1",
     "mypy-boto3-s3>=1.42.37",
+    "passlib>=1.7.4",
     "pydantic-settings>=2.13.1",
+    "pyjwt>=2.11.0",
     "redis>=7.1.1",
 ]
 
