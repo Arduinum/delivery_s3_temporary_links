@@ -80,12 +80,19 @@ class SettingsApp(ModelConfig):
     interface: str
     workers: int
     secret: SecretStr
+    allowed_hosts: str
 
     @property
     def ip(self) -> str:
         """Получает ip адрес"""
 
         return str(self.ip_app)
+
+    @property
+    def get_domains(self) -> list[str]:
+        """Получает список разрешённых доменов"""
+
+        return self.allowed_hosts.split(', ')
 
 
 class SettingsRedis(ModelConfig):
