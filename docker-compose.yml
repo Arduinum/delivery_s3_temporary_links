@@ -24,6 +24,8 @@ services:
       - "${PORT_REDIS}:${PORT_REDIS}"
     volumes:
       - redis_data:/data
+    networks:
+      - links_s3
     healthcheck:
       test: ["CMD-SHELL", "redis-cli --user $REDIS_USER -a $REDIS_PASSWD ping | grep -q PONG || exit 1"]
       interval: 5s
@@ -40,6 +42,8 @@ services:
     ports:
       - "${PORT_APP}:${PORT_APP}"
     command: ["uv", "run", "delivery-s3-temporary-links"]
+    networks:
+      - links_s3
     depends_on:
       - redis
 
@@ -54,6 +58,8 @@ services:
       - "${PORT_HTTPS_NGINX}:${PORT_HTTPS_NGINX}"
     depends_on:
       - links_s3_app
+    networks:
+      - links_s3
     volumes:
       - ./nginx:/etc/nginx
       - ./certs:/etc/letsencrypt
@@ -72,9 +78,14 @@ services:
     command: -c "while true; do certbot renew --nginx; sleep 12h; done"
     depends_on:
       - nginx
+    networks:
+      - links_s3
     volumes:
       - ./certs:/etc/letsencrypt
       - ./nginx/conf.d:/etc/nginx/conf.d
 
 volumes:
   redis_data:
+
+networks:
+  links_s3:
