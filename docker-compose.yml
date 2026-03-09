@@ -73,12 +73,12 @@ services:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL}
     entrypoint: sh -c
-    command: |
-      certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
+    command: >
+      "certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
         while true; do
           certbot renew --webroot -w /var/www/certbot;
           sleep 12h;
-        done
+        done"
     networks:
       - links_s3
     depends_on:
