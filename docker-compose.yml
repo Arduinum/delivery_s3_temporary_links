@@ -62,7 +62,7 @@ services:
       - links_s3
     volumes:
       - ./nginx:/etc/nginx
-      - ./sertbot/certs:/etc/letsencrypt
+      - ./certbot/certs:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
 
   certbot:
