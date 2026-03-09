@@ -63,23 +63,22 @@ services:
     volumes:
       - ./nginx:/etc/nginx
       - ./sertbot/certs:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
 
   certbot:
+    image: certbot/certbot:latest
     restart: unless-stopped
     container_name: certbot
-    build:
-      context: ./certbot
-      dockerfile: Dockerfile
     environment:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL}
     entrypoint: sh -c
     command: |
-      "certbot certonly --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
+      certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
         while true; do
-          certbot renew --nginx;
+          certbot renew --webroot -w /var/www/certbot;
           sleep 12h;
-        done"
+        done
     networks:
       - links_s3
     depends_on:
@@ -87,7 +86,7 @@ services:
     volumes:
       - ./certbot/certs:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
-      - ./nginx:/etc/nginx
+      - ./certbot/www:/var/www/certbot
 
 volumes:
   redis_data:
