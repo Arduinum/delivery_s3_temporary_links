@@ -73,14 +73,13 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
       EMAIL: ${EMAIL}
-    command: >
-      sh -c "
-        certbot certonly --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
+    entrypoint: sh -c
+    command: |
+      "certbot certonly --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
         while true; do
           certbot renew --nginx;
           sleep 12h;
-        done
-      "
+        done"
     networks:
       - links_s3
     depends_on:
