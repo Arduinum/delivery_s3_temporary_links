@@ -63,29 +63,7 @@ services:
       - links_s3
     volumes:
       - ./nginx:/etc/nginx
-      - ./certbot/certs:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-
-  certbot:
-    image: certbot/certbot:latest
-    restart: unless-stopped
-    container_name: certbot
-    entrypoint: sh -c
-    command: >
-      "while true; do
-          certbot renew --webroot -w /var/www/certbot --quiet \
-            --deploy-hook 'docker exec nginx nginx -s reload';
-          sleep 12h;
-        done"
-    networks:
-      - links_s3
-    depends_on:
-      - nginx
-    volumes:
-      - ./certbot/certs:/etc/letsencrypt
-      - ./certbot/logs:/var/log/letsencrypt
-      - ./certbot/www:/var/www/certbot
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/letsencrypt:/etc/letsencrypt
 
 volumes:
   redis_data:
