@@ -63,7 +63,7 @@ services:
       - links_s3
     volumes:
       - ./nginx:/etc/nginx
-      - ./certs:/etc/letsencrypt
+      - ./sertbot/certs:/etc/letsencrypt
 
   certbot:
     image: certbot/certbot:latest
@@ -80,8 +80,8 @@ services:
     networks:
       - links_s3
     volumes:
-      - ./certs:/etc/letsencrypt
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/certs:/etc/letsencrypt
+      - ./certbot/logs:/var/log/letsencrypt
 
 volumes:
   redis_data:
