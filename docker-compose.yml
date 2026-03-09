@@ -57,7 +57,6 @@ services:
       - "${PORT_HTTP_NGINX}:${PORT_HTTP_NGINX}"
       - "${PORT_HTTPS_NGINX}:${PORT_HTTPS_NGINX}"
     depends_on:
-      - certbot
       - links_s3_app
     networks:
       - links_s3
@@ -66,22 +65,30 @@ services:
       - ./sertbot/certs:/etc/letsencrypt
 
   certbot:
-    image: certbot/certbot:latest
     restart: unless-stopped
     container_name: certbot
     build:
       context: ./certbot
       dockerfile: Dockerfile
-      args:
-        DOMAIN: ${DOMAIN}
-        EMAIL: ${EMAIL}
-    entrypoint: /bin/sh
-    command: -c "while true; do certbot renew --nginx; sleep 12h; done"
+    environment:
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL}
+    command: >
+      sh -c "
+        certbot certonly --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive;
+        while true; do
+          certbot renew --nginx;
+          sleep 12h;
+        done
+      "
     networks:
       - links_s3
+    depends_on:
+      - nginx
     volumes:
       - ./certbot/certs:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
+      - ./nginx:/etc/nginx
 
 volumes:
   redis_data:
