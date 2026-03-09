@@ -49,6 +49,7 @@ services:
 
   nginx:
     image: nginx:latest
+    container_name: nginx
     restart: on-failure
     environment:
       PORT_HTTP_NGINX: ${PORT_HTTP_NGINX}
