@@ -60,3 +60,6 @@ env/
 .docker
 .dockerignore
 Dockerfile
+
+# Project
+certbot/
