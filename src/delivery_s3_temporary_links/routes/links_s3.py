@@ -8,7 +8,7 @@ from delivery_s3_temporary_links.dependency.errors import handle_exceptions_s3
 from delivery_s3_temporary_links.utils.utils import is_status_folder
 
 
-file_s3_router = APIRouter(prefix='/files_s3', tags=['Files_S3'])
+file_s3_router = APIRouter(prefix='/files_s3', tags=['files_s3'])
 
 
 @file_s3_router.get('/{bucket_name}/{folder}/private/{name}', status_code=status.HTTP_200_OK,
