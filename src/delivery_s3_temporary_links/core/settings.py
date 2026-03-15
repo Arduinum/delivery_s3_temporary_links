@@ -39,12 +39,7 @@ class Config(BaseSettings):
             init_settings,
             YamlConfigSettingsSource(
                 settings_cls,
-                yaml_file=get_file_path('users.yml'),
-                yaml_file_encoding='utf-8',
-            ),
-            YamlConfigSettingsSource(
-                settings_cls,
-                yaml_file=get_file_path('buckets.yml'),
+                yaml_file=get_file_path('config.yml'),
                 yaml_file_encoding='utf-8',
             ),
             env_settings,
