@@ -12,3 +12,10 @@ buckets:
         status: private
       - name: foldername2
         status: public
+
+users:
+  - username: "name_user"
+    passwd: "user_passwd"
+
+  - username: "name_user"
+    passwd: "user_passwd"
